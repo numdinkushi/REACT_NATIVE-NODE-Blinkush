@@ -13,25 +13,32 @@ const MongoDBStore = ConnectMongoDBSession(fastifySession);
 export const sessionStore = new MongoDBStore({
     uri: process.env.MONGO_URI,
     collection: 'sessions',
-    connectionOptions: {
-    //   useNewUrlParser: true,
-    //   useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 60000, // 60 seconds timeout
-      socketTimeoutMS: 60000, // 60 seconds timeout
-    },
-  });
-  
+});
+
 sessionStore.on("error", (error) => {
     console.log('session store error', error);
 });
 
 export const authenticate = async (email, password) => {
-    if (email === 'numdinkushi@gmail.com' && password === '12345678') {
-        return Promise.resolve({ email, password });
-    } else {
-        return null;
+    if (email && password) {
+        const user = await Admin.findOne({ email });
+        if (!user) {
+            return null;
+        }
+        if (user.password === password) {
+            return Promise.resolve({ email, password });
+        } else {
+            return null;
+        }
+        // if (email === 'numdinkushi@gmail.com' && password === '12345678') {
+        //     return Promise.resolve({ email, password });
+        // } else {
+        // }
+
     }
+
+    return null;
 };
 
 export const PORT = process.env.PORT || 4000;
-export const COOKIE_PASSWORD = process.env.COOKIE_PASSWORD
+export const COOKIE_PASSWORD = process.env.COOKIE_PASSWORD;

@@ -4,6 +4,7 @@ import * as AdminJSMongoose from "@adminjs/mongoose";
 import * as Models from "../models/index.js";
 import { authenticate, COOKIE_PASSWORD, sessionStore } from "./config.js";
 AdminJS.registerAdapter(AdminJSMongoose);
+import { dark, light, noSidebar } from "@adminjs/themes";
 
 export const admin = new AdminJS({
     resources: [
@@ -29,11 +30,19 @@ export const admin = new AdminJS({
             }
         },
         { resource: Models.Branch, },
+        { resource: Models.Product, },
+        { resource: Models.Category, }, 
+        { resource: Models.Order }, 
+        { resource: Models.Counter}, 
     ],
     branding: {
         companyName: "Blinkush",
-        withMadeWithLove: false
+        withMadeWithLove: false,
+        favicon: "",
+        logo: '',
     },
+    defaultTheme: dark.id,
+    availableThemes: [dark, light, noSidebar],
     rootPath: "/admin",
 });
 
@@ -45,11 +54,11 @@ export const buildAdminRouter = async (app) => {
         // cookieMaxAge: 60 * 60 * 24 * 30, // 30 days in seconds
     }, app, {
         store: sessionStore,
-        saveUninitialized: true, 
+        saveUninitialized: true,
         secret: COOKIE_PASSWORD,
         cookie: {
             httpOnly: process.env.NODE_ENV === 'production',
             secure: process.env.NODE_ENV === 'production',
         }
     });
-}; 
+};  
