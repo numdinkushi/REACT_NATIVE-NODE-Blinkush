@@ -58,10 +58,10 @@ export const createOrder = async (req, reply) => {
         console.error("Error creating order:", error);  // Log the error for debugging
         return reply.status(500).send({ message: "An error occurred", error });  // Send error response
     }
-};  
+};
 
 export const confirmOrder = async (req, reply) => {
-    try { 
+    try {
         const { orderId } = req.params;
         const { userId } = req.user;
         const { deliveryPersonLocation } = req.body;
@@ -92,17 +92,19 @@ export const confirmOrder = async (req, reply) => {
             address: deliveryPersonLocation.address || ''
         };
 
+        req.server.io.to(orderId).emit('orderConfirmed', order);
         await order.save();
+        req.server.io.to(orderId).emit('liveTrackingUpdates', order);
 
         return reply.send(order);
     } catch (error) {
         console.log('Confirmed order error', error);
-        return reply.status(500).send({ message: "Failed to confirm order" });
+        return reply.status(500).send({ message: "Failed to confirm order" }); 
     }
 };
 
 export const updateOrderStatus = async (req, reply) => {
-    try {
+    try { 
         const { orderId } = req.params;
         const { status, deliveryPersonLocation } = req.body;
 

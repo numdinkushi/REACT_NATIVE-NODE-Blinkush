@@ -21,10 +21,12 @@
     "connect-mongodb-session": "^5.0.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
+    "fastify-socket.io": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.2",
     "nodemon": "^3.1.7",
+    "socket.io": "^4.8.0",
     "tslib": "^2.8.0"
   }
 }
