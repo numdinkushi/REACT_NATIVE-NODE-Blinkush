@@ -68,7 +68,7 @@ export const categories = [
       discountPrice: 60,
       quantity: "100 g",
       category: "Milk, Curd & Paneer",
-    },
+    em},
     {
       name: "Amul Masti Curd",
       image:
