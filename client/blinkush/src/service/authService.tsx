@@ -1,12 +1,12 @@
 import axios from "axios";
-import { BASE_URL } from "./config";
 import { tokenStorage } from "@state/storage";
 import { useAuthStore } from "@state/authStorage";
 import { resetAndNavigate } from "@utils/navigation-utils";
 import { appAxios } from "./apiInterceptors";
+import { getBaseURL } from "./config";
 
 export const customerLogin = async (phone: string) => {
-    const baseURL = await BASE_URL;
+    const baseURL = getBaseURL();
     try {
         const response = await axios.post(
             `${baseURL}/customer/login`,
@@ -25,7 +25,6 @@ export const customerLogin = async (phone: string) => {
 };
 
 export const refetchUser = async (setUser: any) => {
-    // const baseURL = await BASE_URL;
     try {
         const response = await appAxios.get(`/user`,);
 
@@ -38,7 +37,7 @@ export const refetchUser = async (setUser: any) => {
 };
 
 export const refresh_tokens = async () => {
-    const baseURL = await BASE_URL;
+    const baseURL =  getBaseURL();
     try {
         const refreshToken = tokenStorage.getString('refreshToken');
         const response = await axios.post(`${baseURL}/refresh-token`, { refreshToken },);
