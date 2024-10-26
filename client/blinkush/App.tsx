@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import Navigation from '@navigation/Navigation';
 import { initializeConfig } from 'service/config';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
   useEffect(() => {
@@ -15,7 +16,9 @@ const App = () => {
   }, []);
 
   return (
-    <Navigation />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Navigation />
+    </GestureHandlerRootView>
   );
 };
 
