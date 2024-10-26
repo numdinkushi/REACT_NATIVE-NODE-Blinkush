@@ -12,7 +12,8 @@ const start = async () => {
 
     app.register(fastifySocketIo, {
         cors: {
-            origin: "*"
+            origin: "*",
+            methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         },
         pingInterval: 10000,
         pingTimeout: 5000,
@@ -22,7 +23,7 @@ const start = async () => {
     await registerRoutes(app);
     await buildAdminRouter(app);
 
-    app.listen({ port: PORT, host: '0.0.0.0' },
+    app.listen({ port: PORT, host: '0.0.0.0' }, 
         (err, addr) => {
             if (err) {
                 console.log(err);

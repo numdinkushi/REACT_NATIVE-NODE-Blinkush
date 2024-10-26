@@ -1,6 +1,6 @@
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 
-import { Animated, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Animated, Image, Keyboard, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import CustomSafeAreaView from '@components/global/CustomSafeAreaView';
 import ProductSlider from '@components/login/ProductSlider';
@@ -12,8 +12,9 @@ import CustomInput from '@components/ui/CustomInput';
 import CustomButton from '@components/ui/CustomButton';
 import useKeyboardOffsetHeight from '@utils/useKeyboardOffsetHeight';
 import LinearGradient from 'react-native-linear-gradient';
+import { customerLogin } from 'service/authService';
 
-const bottomColors = [...lightColors].reverse()
+const bottomColors = [...lightColors].reverse();
 
 const CustomerLogin = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -43,9 +44,18 @@ const CustomerLogin = () => {
     };
 
     const handleAuth = async () => {
+        Keyboard.dismiss();
         setLoading(true);
-        // Authenticate with backend and handle success/failure
-        setLoading(false);
+        try {
+            const res = await customerLogin(phoneNumber);
+            if (res?.data) {
+                resetAndNavigate('ProductDashboard');
+            }
+        } catch (error) {
+            Alert.alert('Login Failed');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const animatedValue = useRef(new Animated.Value(0)).current;

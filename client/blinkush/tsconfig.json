@@ -7,7 +7,7 @@
     "paths": {
       "@assets/*": ["assets/*"],
       "@features/*": ["features/*"],
-      "@service/*": ["service/*"],
+      "@service/*": ["src/service/service/*"],
       "@navigation/*": ["navigation/*"],
       "@components/*": ["components/*"],
       "@state/*": ["state/*"],
