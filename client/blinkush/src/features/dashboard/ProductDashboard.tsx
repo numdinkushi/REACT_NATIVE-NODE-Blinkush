@@ -3,8 +3,10 @@ import React, { useEffect, useRef } from 'react';
 import NoticeAnimation from './NoticeAnimation';
 import { NoticeHeight } from '@utils/scaling';
 import Visuals from './Visuals';
-import { CollapsibleContainer, CollapsibleHeaderContainer, withCollapsibleContext } from '@r0b0t3d/react-native-collapsible';
+import { CollapsibleContainer, CollapsibleHeaderContainer, CollapsibleScrollView, withCollapsibleContext } from '@r0b0t3d/react-native-collapsible';
 import AnimatedHeader from './AnimatedHeader';
+import StickySearchBar from './StickySearchBar';
+import Content from '@components/dashboard/Content';
 
 const NOTICE_HEIGHT = -(NoticeHeight + 15);
 
@@ -55,7 +57,16 @@ const ProductDashboard = () => {
             <AnimatedHeader
               showNotice={showNotice}
             />
+            <StickySearchBar />
           </CollapsibleHeaderContainer>
+          <CollapsibleScrollView
+            nestedScrollEnabled
+            style={styles.panelContainer}
+            showsVerticalScrollIndicator={false}>
+            <Content
+              
+            />
+          </CollapsibleScrollView>
         </CollapsibleContainer>
       </>
     </NoticeAnimation>

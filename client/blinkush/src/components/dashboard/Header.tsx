@@ -4,7 +4,7 @@ import CustomText from '@components/login/ui/CustomText';
 import { Fonts } from '@utils/Constants';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useAuthStore } from '@state/authStorage';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Header = ({ showNotice }: { showNotice: () => void; }) => {
     const { setUser, user } = useAuthStore();
@@ -30,12 +30,15 @@ const Header = ({ showNotice }: { showNotice: () => void; }) => {
                         {user?.address || 'Nowhere, Somewhere 😃'}
                     </CustomText>
                     <Icon
-                        name='chevron-down'
+                        name='menu-down'
                         color='white'
                         size={RFValue(20)}
                         style={{ bottom: -1 }}
                     />
                 </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Icon name='account-circle-outline' size={RFValue(36)} color='white' />
             </TouchableOpacity>
         </View>
     );
@@ -55,6 +58,18 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontWeight: 'bold'
+    },
+    text2: {
+        color: 'white',
+        width: '90%'
+    },
+    flexRow: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 2,
+        width: '70%',
+        marginTop: 2,
     },
     flexRowGap: {
         flexDirection: 'row',
