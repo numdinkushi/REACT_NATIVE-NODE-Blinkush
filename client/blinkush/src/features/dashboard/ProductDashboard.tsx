@@ -7,6 +7,9 @@ import { CollapsibleContainer, CollapsibleHeaderContainer, CollapsibleScrollView
 import AnimatedHeader from './AnimatedHeader';
 import StickySearchBar from './StickySearchBar';
 import Content from '@components/dashboard/Content';
+import CustomText from '@components/ui/CustomText';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Fonts } from '@utils/Constants';
 
 const NOTICE_HEIGHT = -(NoticeHeight + 15);
 
@@ -63,9 +66,18 @@ const ProductDashboard = () => {
             nestedScrollEnabled
             style={styles.panelContainer}
             showsVerticalScrollIndicator={false}>
-            <Content
-              
-            />
+            <Content />
+            <View style={{ backgroundColor: '#f8f8f8', padding: 20 }}>
+              <CustomText
+                fontSize={RFValue(42)}
+                style={{ opacity: 0.2, fontWeight: 'bold' }}>
+                India's last minute app 🥭
+              </CustomText>
+              <CustomText
+                style={{ marginTop: 10, paddingBottom: 100, opacity: 0.2, fontWeight: 'bold' }}>
+                Developed by ❤️ Kushi Numdin
+              </CustomText>
+            </View>
           </CollapsibleScrollView>
         </CollapsibleContainer>
       </>

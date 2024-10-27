@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import AdCarousel from './AdCarousel';
+import { adData } from '@utils/dummyData';
 
 const Content = () => {
   return (
-    <View>
-      <Text>Content</Text>
+    <View style={styles.container}>
+      <AdCarousel adData={adData} />
     </View>
-  )
-}
+  );
+};
 
-export default Content
+export default Content;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20
+  }
+});

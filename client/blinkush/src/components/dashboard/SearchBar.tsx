@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Colors, Fonts } from '@utils/Constants';
 import { RFValue } from 'react-native-responsive-fontsize';
 import RollingBar from 'react-native-rolling-bar';
-import CustomText from '@components/login/ui/CustomText';
+import CustomText from '@components/ui/CustomText';
 
 const SearchBar = () => {
     return (

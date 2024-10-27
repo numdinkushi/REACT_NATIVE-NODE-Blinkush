@@ -6,13 +6,13 @@ import CustomSafeAreaView from '@components/global/CustomSafeAreaView';
 import { screenHeight } from '@utils/scaling';
 import { lottie } from 'constants/files/filesConstants';
 import LottieView from "lottie-react-native";
-import CustomText from '@components/login/ui/CustomText';
+import CustomText from '@components/ui/CustomText';
 import { Fonts } from '@utils/Constants';
-import CustomInput from '@components/login/ui/CustomInput';
+import CustomInput from '@components/ui/CustomInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { ScrollView } from 'react-native-gesture-handler';
-import CustomButton from '@components/login/ui/CustomButton';
+import CustomButton from '@components/ui/CustomButton';
 
 const DeliveryLogin = () => {
   const [email, setEmail] = useState('');
