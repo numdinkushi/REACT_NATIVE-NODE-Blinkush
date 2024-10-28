@@ -34,7 +34,7 @@ export interface Products{
     quantity: string,
 }
 
-export interface Categories{
+export interface Category{
     id: number,
     name: string,
     image: string,
@@ -127,7 +127,7 @@ const productsList: Products[] =
 
 
 
-export const categories: Categories[] = [
+export const categories: Category[] = [
     {
         id: 1,
         name: "Milk, Curd & Paneer",

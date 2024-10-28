@@ -21,7 +21,7 @@ const initializeURLs = async () => {
   const APP_SOCKET_URL = `http://${BASE_IP}:${SOCKET_PORT}`;
 
   //note: remove the '!' and provide a proper production url
-  BASE_URL = !isProduction ? `http://192.168.132.243:${API_PORT}/api` : APP_BASE_URL;
+  BASE_URL = !isProduction ? `http://192.168.147.243:${API_PORT}/api` : APP_BASE_URL;
   SOCKET_URL = !isProduction ? 'https://your-production-socket-url.com' : APP_SOCKET_URL;
 
   // BASE_URL = isProduction ? APP_BASE_URL : `http://192.168.132.243:${API_PORT}/api`;
