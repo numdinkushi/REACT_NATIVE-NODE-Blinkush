@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import CustomText from '@components/login/ui/CustomText';
+import CustomText from '@components/ui/CustomText';
 import { Fonts } from '@utils/Constants';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useAuthStore } from '@state/authStorage';

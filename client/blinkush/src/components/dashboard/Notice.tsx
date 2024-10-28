@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { NoticeHeight } from '@utils/scaling';
-import CustomText from '@components/login/ui/CustomText';
+import CustomText from '@components/ui/CustomText';
 import { Fonts } from '@utils/Constants';
 import Svg, { Defs, G, Path, Use } from 'react-native-svg';
 import { wavyData } from '@utils/dummyData';
