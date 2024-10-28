@@ -3,10 +3,9 @@ import React from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 import { screenWidth } from '@utils/scaling';
 import Carousel from 'react-native-reanimated-carousel';
-// import { Image } from 'react-native';
+import ScalePress from '@components/ui/ScalePress';
 
 const AdCarousel = ({ adData }: { adData: ImageSourcePropType[]; }) => {
-    const progressValue = useSharedValue(0);
     const baseOptions = {
         vertical: false,
         width: screenWidth,
@@ -14,7 +13,7 @@ const AdCarousel = ({ adData }: { adData: ImageSourcePropType[]; }) => {
     };
 
     return (
-        <View style={{ left: -10, marginVertical: 20 }}>
+        <View style={{ left: -20, marginVertical: 20, }}>
             <Carousel
                 {...baseOptions}
                 loop
@@ -25,11 +24,15 @@ const AdCarousel = ({ adData }: { adData: ImageSourcePropType[]; }) => {
                 mode='parallax'
                 data={adData}
                 modeConfig={{
-                    parallaxScrollingOffset: 0.94,
-                    parallaxScrollingScale: 0.4
+                    parallaxScrollingOffset: 0,
+                    parallaxScrollingScale: 0.94
                 }}
                 renderItem={({ item }: { item: ImageSourcePropType | undefined; }) => {
-                    return (<Image style={styles.img} source={item} />);
+                    return (
+                        <ScalePress style={styles.imageContainer}>
+                            <Image style={styles.img} source={item} />
+                        </ScalePress>
+                    );
                 }}
             />
         </View>

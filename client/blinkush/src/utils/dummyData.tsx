@@ -25,7 +25,23 @@ export const adData = [
     require('../assets/products/c5.jpg'),
 ]
 
-const productsList =
+export interface Products{
+    id: number,
+    name: string,
+    image: string,
+    price: number,
+    discountPrice: number,
+    quantity: string,
+}
+
+export interface Categories{
+    id: number,
+    name: string,
+    image: string,
+    products?: Products[],
+}
+
+const productsList: Products[] =
     [
         {
             id: 1,
@@ -111,7 +127,7 @@ const productsList =
 
 
 
-export const categories = [
+export const categories: Categories[] = [
     {
         id: 1,
         name: "Milk, Curd & Paneer",
