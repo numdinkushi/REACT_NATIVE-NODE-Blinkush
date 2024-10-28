@@ -1,13 +1,13 @@
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { Categories } from '@utils/dummyData';
+import {  Category } from '@utils/dummyData';
 import ScalePress from '@components/ui/ScalePress';
 import { navigate } from '@utils/navigation-utils';
 import CustomText from '@components/ui/CustomText';
 import { Fonts } from '@utils/Constants';
 
-const CategoryContainer = ({ data }: { data: Categories[]; }) => {
-    const renderItems = (items: Categories[]) => {
+const CategoryContainer = ({ data }: { data: Category[]; }) => {
+    const renderItems = (items: Category[]) => {
         return items.map((item, index: number) => (
             <ScalePress onPress={() => navigate('ProductCategories')} key={index} style={styles.item}>
                 <View style={styles.imageContainer}>
