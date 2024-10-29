@@ -6,6 +6,7 @@ import { clock } from 'constants/files/filesConstants';
 import CustomText from '@components/ui/CustomText';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Colors, Fonts } from '@utils/Constants';
+import UniversalAdd from '@components/ui/UniversalAdd';
 
 interface ProductItemProps {
     item: Product;
@@ -32,12 +33,15 @@ const ProductItem = ({ item, index }: ProductItemProps) => {
                     {item.name}
                 </CustomText>
                 <View style={styles.priceContainer}>
+                    <View>
                         <CustomText variant='h6' style={{ fontWeight: 500 }}>
                             ${item.price}
                         </CustomText>
                         <CustomText variant='h6' style={{ fontWeight: 300, textDecorationLine: 'line-through' }}>
-                           ${item.discountPrice}
+                            ${item.discountPrice}
                         </CustomText>
+                    </View>
+                    <UniversalAdd item={item} />
                 </View>
             </View>
         </View>
@@ -89,9 +93,9 @@ const styles = StyleSheet.create({
     },
     priceContainer: {
         flexDirection: 'row',
-        alignItems:'center',
-        gap:4,
+        alignItems: 'center',
+        gap: 4,
         paddingVertical: 10,
-        marginTop:'auto'
+        marginTop: 'auto'
     }
 });
