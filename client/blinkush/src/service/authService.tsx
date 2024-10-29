@@ -17,7 +17,7 @@ export const deliveryLogin = async (email: string, password: string) => {
 
         return response;
     } catch (error) {
-        console.log('Login error: ' + error);
+        console.log('deliveryLogin error: ' + error);
     }
 };
 
@@ -32,7 +32,7 @@ export const customerLogin = async (phone: string) => {
 
         return response;
     } catch (error) {
-        console.log('Login error: ' + error);
+        console.log('customerLogin error: ' + error);
     }
 };
 
@@ -44,7 +44,7 @@ export const refetchUser = async (setUser: any) => {
 
         // return response;
     } catch (error) {
-        console.log('Login error: ' + error);
+        console.log('refetchUser error: ' + error);
     }
 };
 
