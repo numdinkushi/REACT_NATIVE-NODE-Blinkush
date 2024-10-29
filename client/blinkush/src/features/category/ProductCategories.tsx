@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import { Category, Product, } from '@utils/dummyData';
 import { getAllCategories, getProductsByCategoryId } from 'service/productService';
 import ProductList from './ProductList';
+import withCart from '@features/cart/WithCard';
 
 const ProductCategories = () => {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -70,7 +71,7 @@ const ProductCategories = () => {
                         />)
                         : (
                             <ProductList
-                                data={products }
+                                data={products}
                             />
                         )
                 }
@@ -79,7 +80,7 @@ const ProductCategories = () => {
     );
 };
 
-export default ProductCategories;
+export default withCart (ProductCategories);
 
 const styles = StyleSheet.create({
     mainContainer: {
