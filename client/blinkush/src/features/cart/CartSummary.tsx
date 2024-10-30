@@ -1,10 +1,9 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet,  TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { screenHeight, screenWidth } from '@utils/scaling';
 import { Colors, Fonts } from '@utils/Constants';
 import { defaultCartImage2 } from 'constants/files/filesConstants';
 import CustomText from '@components/ui/CustomText';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconIo from 'react-native-vector-icons/Ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { navigate } from '@utils/navigation-utils';
@@ -19,23 +18,27 @@ const CartSummary = ({ cartCount, cartImage }: CartSummaryProps) => {
     return (
         <View style={styles.container}>
             <View style={styles.flexRow}>
-                <Image
-                    source={cartImage === null
-                        ? defaultCartImage2
-                        : { uri: cartImage }}
-                    style={styles.image}
-                />
+                {
+                    cartImage ? <Image
+                        source={{ uri: cartImage }}
+                        style={styles.image}
+                    /> : <Image
+                        source={
+                            defaultCartImage2}
+                        style={styles.image}
+                    />
+                }
                 <CustomText fontFamily={Fonts.SemiBold}>
                     {cartCount} item{cartCount > 1 ? 's' : ''}
                 </CustomText>
-                {/* <Icon name='arrow-drop-up' color={Colors.secondary} size={RFValue(12)} /> */}
+                <IconIo name='caret-up-outline' color={Colors.secondary} size={RFValue(12)} />
                 <TouchableOpacity
                     style={styles.btn}
                     activeOpacity={0.7}
                     onPress={() => navigate('ProductOrder')}
                 >
                     <CustomText style={styles.btnText}> Next</CustomText>
-                    {/* <IconIo name='arrow-right' color='fff' size={RFValue(12)} /> */}
+                    <IconIo name='arrow-forward-outline' color='fff' size={RFValue(12)} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -78,6 +81,7 @@ const styles = StyleSheet.create({
         marginLeft: screenWidth * 0.02,
         color: 'white',
         fontWeight: 'bold',
+        marginRight: 2,
     }
 
 });
