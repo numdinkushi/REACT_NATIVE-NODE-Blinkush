@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Animated as RNAnimated, SafeAreaView, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, View, Animated as RNAnimated, SafeAreaView, TouchableOpacity, Platform } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import NoticeAnimation from './NoticeAnimation';
 import { NoticeHeight, screenHeight } from '@utils/scaling';
@@ -12,6 +12,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { Fonts } from '@utils/Constants';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
+import withCart from '@features/cart/WithCard';
 
 const NOTICE_HEIGHT = -(NoticeHeight + 15);
 
@@ -140,4 +141,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default withCollapsibleContext(ProductDashboard);
+export default withCart(withCollapsibleContext(ProductDashboard));

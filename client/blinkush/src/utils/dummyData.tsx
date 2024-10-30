@@ -15,7 +15,7 @@ export const imageData = [
     require('../assets/products/14.png'),
     require('../assets/products/15.png'),
     require('../assets/products/16.png'),
-]
+];
 
 export const adData = [
     require('../assets/products/c1.jpg'),
@@ -23,10 +23,11 @@ export const adData = [
     require('../assets/products/c3.jpg'),
     require('../assets/products/c4.jpg'),
     require('../assets/products/c5.jpg'),
-]
+];
 
-export interface Products{
+export interface Product {
     id: number,
+    _id?: string,
     name: string,
     image: string,
     price: number,
@@ -34,14 +35,15 @@ export interface Products{
     quantity: string,
 }
 
-export interface Category{
+export interface Category {
     id: number,
+    _id?: string,
     name: string,
     image: string,
-    products?: Products[],
+    products?: Product[],
 }
 
-const productsList: Products[] =
+const productsList: Product[] =
     [
         {
             id: 1,
@@ -123,7 +125,7 @@ const productsList: Products[] =
             discountPrice: 45,
             quantity: '500 ml',
         }
-    ]
+    ];
 
 
 
@@ -169,10 +171,10 @@ export const categories: Category[] = [
         name: "Cleaning Essentials",
         image: require('../assets/category/8.png')
     },
-]
+];
 
 
-export const wavyData = "M 0 2000 0 500 Q 62.5 280 125 500 t 125 0 125 0 125 0 125 0 125 0 125 0 125 0 125 0 125 0 125 0   125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0 v1000 z"
+export const wavyData = "M 0 2000 0 500 Q 62.5 280 125 500 t 125 0 125 0 125 0 125 0 125 0 125 0 125 0 125 0 125 0 125 0   125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0  125 0 125 0 125 0 v1000 z";
 
 
 
@@ -182,8 +184,8 @@ export const orders = [
     {
         orderId: 'ORDER21312',
         items: [
-            { id: 'a', item: {name:'Milk'}, count: 2 },
-            { id: 'b', item: {name:'Tea'}, count: 1 },
+            { id: 'a', item: { name: 'Milk' }, count: 2 },
+            { id: 'b', item: { name: 'Tea' }, count: 1 },
         ],
         totalPrice: 25.00,
         createdAt: '2024-08-10T10:00:00Z',

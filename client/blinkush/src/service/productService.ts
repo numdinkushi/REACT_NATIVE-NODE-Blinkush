@@ -11,20 +11,19 @@ export const getAllCategories = async () => {
         return response.data;
     } catch (error) {
         console.log('fetch Category error: ' + error);
-        console.log(2222, error)
+        console.log(error);
 
         return [];
     }
 };
 
-export const getProductsByCategoryd = async (id: string) => {
+export const getProductsByCategoryId = async (id: string) => {
     try {
         const response = await appAxios.get(`${baseURL}/products/${id}`);
-
         return response.data;
     } catch (error) {
         console.log('fetch Category error: ' + error);
-       
+
         return [];
     }
 };

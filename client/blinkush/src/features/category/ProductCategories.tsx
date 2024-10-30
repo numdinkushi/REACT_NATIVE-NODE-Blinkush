@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 import CustomHeader from '@components/ui/CustomHeader';
 import { Colors } from '@utils/Constants';
 import Sidebar from './Sidebar';
-import { Category } from '@utils/dummyData';
-import { getAllCategories } from 'service/productService';
+import { Category, Product, } from '@utils/dummyData';
+import { getAllCategories, getProductsByCategoryId } from 'service/productService';
+import ProductList from './ProductList';
+import withCart from '@features/cart/WithCard';
 
 const ProductCategories = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-    const [products, setProducts] = useState<any>([]);
+    const [products, setProducts] = useState<Product[]>([]);
     const [isCategoriesLoading, setIsCategoriesLoading] = useState<boolean>(false);
     const [isProductLoading, setIsProductLoading] = useState<boolean>(false);
 
@@ -26,9 +28,28 @@ const ProductCategories = () => {
         } finally { setIsCategoriesLoading(false); };
     };
 
+    const fetchProducts = async (categoryId: string) => {
+        try {
+            setIsProductLoading(true);
+            const data = await getProductsByCategoryId(categoryId);
+            setProducts(data);
+            if (data && data?.length > 0) {
+                setProducts(data);
+            }
+        } catch (error) {
+            console.log('Error fetching products', error);
+        } finally { setIsProductLoading(false); };
+    };
+
     useEffect(() => {
         fetchCategories();
     }, []);
+
+    useEffect(() => {
+        if (selectedCategory?._id) {
+            fetchProducts(selectedCategory?._id);
+        }
+    }, [selectedCategory]);
 
     return (
         <View style={styles.mainContainer}>
@@ -40,13 +61,26 @@ const ProductCategories = () => {
                         categories={categories}
                         selectedCategory={selectedCategory}
                         onCategoryPress={(category: Category) => setSelectedCategory(category)}
-                    />}
+                    />
+                }
+                {
+                    isProductLoading
+                        ? (<ActivityIndicator
+                            color={Colors.border}
+                            style={styles.center}
+                        />)
+                        : (
+                            <ProductList
+                                data={products}
+                            />
+                        )
+                }
             </View>
         </View>
     );
 };
 
-export default ProductCategories;
+export default withCart (ProductCategories);
 
 const styles = StyleSheet.create({
     mainContainer: {

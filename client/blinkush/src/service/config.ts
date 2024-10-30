@@ -1,31 +1,30 @@
-import { NetworkInfo } from "react-native-network-info";
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 let BASE_URL: string;
 let SOCKET_URL: string;
 
-// Get the device's IP address
-const getLocalIpAddress = async (): Promise<string> => {
-
-  return await NetworkInfo.getIPV4Address() as string;
+const getServerIpAddress = async (): Promise<string> => {
+  if (isProduction) {
+    return 'your-production-server-ip'; 
+  } else {
+    // return '10.0.2.2' 
+    return '192.168.34.243'; // Replace with your PC's IP (running server)
+  }
 };
 
 // Dynamically set BASE_URL and SOCKET_URL based on the environment
 const initializeURLs = async () => {
-  const BASE_IP = await getLocalIpAddress();
+  const BASE_IP = await getServerIpAddress();
   const API_PORT = process.env.REACT_APP_API_PORT || 3000;
   const SOCKET_PORT = process.env.REACT_APP_SOCKET_PORT || 3000;
 
   const APP_BASE_URL = `http://${BASE_IP}:${API_PORT}/api`;
   const APP_SOCKET_URL = `http://${BASE_IP}:${SOCKET_PORT}`;
 
-  //note: remove the '!' and provide a proper production url
-  BASE_URL = !isProduction ? `http://192.168.147.243:${API_PORT}/api` : APP_BASE_URL;
-  SOCKET_URL = !isProduction ? 'https://your-production-socket-url.com' : APP_SOCKET_URL;
+  console.log(2222, APP_BASE_URL)
 
-  // BASE_URL = isProduction ? APP_BASE_URL : `http://192.168.132.243:${API_PORT}/api`;
-  // SOCKET_URL = isProduction ? APP_SOCKET_URL : 'https://your-production-socket-url.com';
+  BASE_URL = !isProduction ? APP_BASE_URL : `https://your-production-api-url.com/api`;
+  SOCKET_URL = !isProduction ? APP_SOCKET_URL : 'https://your-production-socket-url.com';
 };
 
 export const initializeConfig = async () => {
@@ -34,4 +33,3 @@ export const initializeConfig = async () => {
 
 export const getBaseURL = () => BASE_URL;
 export const getSocketURL = () => SOCKET_URL;
-
