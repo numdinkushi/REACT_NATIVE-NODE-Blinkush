@@ -7,7 +7,7 @@ interface CartItem {
     _id: string | number;
     item: Product;
     count: number;
-}
+} 
 
 interface CartStore {
     cart: CartItem[];
