@@ -16,7 +16,7 @@ interface CartStore {
     clearCart: () => void;
     getItemCount: (id: string | number) => number;
     getTotalPrice: () => number;
-} 
+}
 
 export const useCartStore = create<CartStore>()(
     persist(
