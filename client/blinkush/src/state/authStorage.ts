@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { mmkvStorage } from "./storage";
+import { Order, User } from "types/types";
 
 interface authStore {
-    user: Record<string, any> | null;
-    setUser: (user: any) => void;
-    setCurrentOrder: (order: any) => void;
-    currentOrder: Record<string, any> | null;
+    user: User | null;
+    setUser: (user: User) => void;
+    setCurrentOrder: (order: Order) => void;
+    currentOrder: Order | null;
     logout: () => void;
 }
 

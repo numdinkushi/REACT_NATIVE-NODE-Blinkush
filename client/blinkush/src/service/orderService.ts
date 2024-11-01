@@ -18,7 +18,20 @@ export const createOrder = async (items: CreateOrderData[], totalPrice: number) 
         return response.data;
     } catch (error) {
         console.log('Create order error: ' + error);
-       
+
+        return null;
+    }
+};
+
+export const getOrderById = async (id: string) => {
+    if (!id) return
+    try {
+        const response = await appAxios.post(`/order/${id}`);
+
+        return response.data;
+    } catch (error) {
+        console.log('Fetch order by Id error ', error);
+
         return null;
     }
 };
