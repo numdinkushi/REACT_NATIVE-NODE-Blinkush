@@ -8,7 +8,7 @@ const getServerIpAddress = async (): Promise<string> => {
     return 'your-production-server-ip'; 
   } else {
     // return '10.0.2.2' 
-    return '192.168.34.243'; // Replace with your PC's IP (running server)
+    return '192.168.96.243'; // Replace with your PC's IP (running server)
   }
 };
 

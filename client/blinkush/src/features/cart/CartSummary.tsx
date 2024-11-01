@@ -1,8 +1,8 @@
-import { Image, StyleSheet,  TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { screenHeight, screenWidth } from '@utils/scaling';
 import { Colors, Fonts } from '@utils/Constants';
-import { defaultCartImage2 } from 'constants/files/filesConstants';
+import { defaultCartImage, defaultCartImage2 } from 'constants/files/filesConstants';
 import CustomText from '@components/ui/CustomText';
 import IconIo from 'react-native-vector-icons/Ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -18,16 +18,13 @@ const CartSummary = ({ cartCount, cartImage }: CartSummaryProps) => {
     return (
         <View style={styles.container}>
             <View style={styles.flexRow}>
-                {
-                    cartImage ? <Image
-                        source={{ uri: cartImage }}
-                        style={styles.image}
-                    /> : <Image
+                {/* {
+                    !cartImage && <Image
                         source={
-                            defaultCartImage2}
+                            defaultCartImage}
                         style={styles.image}
                     />
-                }
+                } */}
                 <CustomText fontFamily={Fonts.SemiBold}>
                     {cartCount} item{cartCount > 1 ? 's' : ''}
                 </CustomText>
