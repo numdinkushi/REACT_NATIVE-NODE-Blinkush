@@ -14,7 +14,7 @@ const Visuals = () => {
         const opacity = interpolate(scrollY.value, [0, 120], [1, 0]);
         return { opacity };
     });
-
+console.log(111, cloud)
     return (
         <Animated.View style={[styles.container, headerAnimatedStyle]}>
             <LinearGradient colors={darkWeatherColors} style={styles.gradient} />

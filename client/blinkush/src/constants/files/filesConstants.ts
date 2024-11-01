@@ -5,7 +5,9 @@ import raining from "@assets/animations/raining.json";
 import clock from "@assets/icons/clock.png";
 import defaultCartImage from '@assets/products/10.png';
 import defaultCartImage2 from '@assets/icons/bucket.png';
-
+import coupon from '@assets/icons/coupon.png';
+import home from '@assets/icons/home.png';
+import lottieOrderSuccess from '@assets/animations/confirm.json';
 export {
     logo,
     lottie,
@@ -13,5 +15,8 @@ export {
     raining,
     clock,
     defaultCartImage,
-    defaultCartImage2
+    defaultCartImage2,
+    coupon,
+    home,
+    lottieOrderSuccess
 };

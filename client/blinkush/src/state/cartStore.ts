@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { mmkvStorage } from "./storage";
 import { Product } from "@utils/dummyData";
 
-interface CartItem {
+export interface CartItem {
     _id: string | number;
     item: Product;
     count: number;
