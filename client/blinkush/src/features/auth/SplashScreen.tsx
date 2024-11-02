@@ -53,6 +53,11 @@ const SplashScreen = () => {
                 }
             }
 
+            // if (user?.role === 'Customer'){
+            //     resetAndNavigate('LiveTracking');
+            // }else{
+            //     resetAndNavigate('DeliveryDashboard');
+            // }
             if (user?.role === 'Customer'){
                 resetAndNavigate('ProductDashboard');
             }else{

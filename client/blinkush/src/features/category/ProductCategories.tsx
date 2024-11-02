@@ -6,7 +6,7 @@ import Sidebar from './Sidebar';
 import { Category, Product, } from '@utils/dummyData';
 import { getAllCategories, getProductsByCategoryId } from 'service/productService';
 import ProductList from './ProductList';
-import withCart from '@features/cart/WithCard';
+import withCart from '@features/cart/WithCart';
 
 const ProductCategories = () => {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -80,7 +80,7 @@ const ProductCategories = () => {
     );
 };
 
-export default withCart (ProductCategories);
+export default withCart(ProductCategories);
 
 const styles = StyleSheet.create({
     mainContainer: {

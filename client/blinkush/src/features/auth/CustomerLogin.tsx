@@ -48,6 +48,9 @@ const CustomerLogin = () => {
         setLoading(true);
         try {
             const res = await customerLogin(phoneNumber);
+            // if (res?.data) {
+            //     resetAndNavigate('LiveTracking');
+            // }
             if (res?.data) {
                 resetAndNavigate('ProductDashboard');
             }

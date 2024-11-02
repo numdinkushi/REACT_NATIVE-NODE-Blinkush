@@ -36,7 +36,7 @@ const start = async () => {
 
     app.ready().then(() => {
         app.io.on('connection', (socket) => {
-            console.log('A user connected');
+            console.log('A USER CONNECTED 🟢');
 
             socket.on('joinRoom', (orderId) => {
                 socket.join(orderId);
@@ -44,7 +44,7 @@ const start = async () => {
             });
 
             socket.on('disconnect', () => {
-                console.log('User disconnected');
+                console.log('USER DISCONNECTED 🔴');
             });
         });
     });
