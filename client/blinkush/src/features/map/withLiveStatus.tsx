@@ -8,7 +8,11 @@ import { navigate } from "@utils/navigation-utils";
 import { defaultCartImage2 } from "constants/files/filesConstants";
 import { FC, useEffect } from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { getSocketURL } from "service/config";
 import { getOrderById } from "service/orderService";
+import io from "socket.io-client";
+
+const SOCKET_URL = getSocketURL();
 
 const withLiveStatus = <P extends object>(WrappedComponent: React.ComponentType): FC<P> => {
     const WithLiveStatusComponent: FC<P> = (props) => {
@@ -19,12 +23,32 @@ const withLiveStatus = <P extends object>(WrappedComponent: React.ComponentType)
             setCurrentOrder(data);
         };
 
-        useEffect(()=>{
-            fetchOrderDetails()
-        },[])
         const orderItemName = currentOrder?.items[0]?.item.name;
         const remainingOrder = currentOrder && currentOrder?.items?.length - 1;
         const isMoreThanOneItem = remainingOrder && remainingOrder > 0;
+
+        useEffect(() => {
+            console.log(2345, 'Testing', {currentOrder})
+            if (currentOrder) {
+                const socketInstance = io(SOCKET_URL, {
+                    transports: ['websocket'],
+                    withCredentials: false
+                });
+                socketInstance.emit('joinRoom', currentOrder?._id);
+                socketInstance.on('liveTrackingUpdates', (updatedOrder) => {
+                    fetchOrderDetails();
+                    console.log('Receiving LIVE UPDATES...');
+                });
+                socketInstance.on('orderConfirmed', (confirmOrder) => {
+                    fetchOrderDetails();
+                    console.log('ORDER CONFIRM LIVE UPDATES...');
+                });
+
+                return () => {
+                    socketInstance.disconnect();
+                };
+            }
+        }, [currentOrder]);
 
         return (
             <View style={styles.container}>
@@ -85,7 +109,7 @@ const styles = StyleSheet.create({
     btn: {
         paddingHorizontal: 10,
         paddingVertical: 2,
-        display:'flex',
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 0.7,

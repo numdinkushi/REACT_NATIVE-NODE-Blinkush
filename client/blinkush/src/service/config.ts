@@ -19,7 +19,8 @@ const initializeURLs = async () => {
   const SOCKET_PORT = process.env.REACT_APP_SOCKET_PORT || 3000;
 
   const APP_BASE_URL = `http://${BASE_IP}:${API_PORT}/api`;
-  const APP_SOCKET_URL = `http://${BASE_IP}:${SOCKET_PORT}`;
+  // const APP_SOCKET_URL = `http://${BASE_IP}:${SOCKET_PORT}`;
+  const APP_SOCKET_URL = `ws://${BASE_IP}:${SOCKET_PORT}`;
 
   console.log(2222, APP_BASE_URL)
 
