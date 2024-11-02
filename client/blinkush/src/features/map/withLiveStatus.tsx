@@ -28,7 +28,6 @@ const withLiveStatus = <P extends object>(WrappedComponent: React.ComponentType)
         const isMoreThanOneItem = remainingOrder && remainingOrder > 0;
 
         useEffect(() => {
-            console.log(2345, 'Testing', {currentOrder})
             if (currentOrder) {
                 const socketInstance = io(SOCKET_URL, {
                     transports: ['websocket'],
