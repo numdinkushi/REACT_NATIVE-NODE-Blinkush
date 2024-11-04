@@ -22,6 +22,8 @@ export interface User {
     liveLocation: Location;
     name: string;
     phone: number;
+    email?: string;
+    branch?: string;
     role: "Customer" | "DeliveryPartner";
 }
 

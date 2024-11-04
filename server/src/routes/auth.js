@@ -8,4 +8,4 @@ export const authRoutes = async (fastify, options) => {
     fastify.post('/refresh-token', refreshToken);
     fastify.get('/user', { preHandler: [verifyToken] }, fetchUser);
     fastify.patch('/user', { preHandler: [verifyToken] }, updateUser);
-};
+}; 
