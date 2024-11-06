@@ -17,8 +17,6 @@ const Profile = () => {
     const { logout, user } = useAuthStore();
     const { clearCart } = useCartStore();
 
-    console.log(555, user);
-
     const fetchOrders = async () => {
         if (!user?._id) return;
 

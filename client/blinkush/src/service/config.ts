@@ -8,15 +8,15 @@ const getServerIpAddress = async (): Promise<string> => {
     return 'your-production-server-ip'; 
   } else {
     // return '10.0.2.2' 
-    return '192.168.77.243'; // Replace with your PC's IP (running server)
+    return '192.168.225.243'; // Replace with your PC's IP (running server)
   }
 };
 
 // Dynamically set BASE_URL and SOCKET_URL based on the environment
 const initializeURLs = async () => {
   const BASE_IP = await getServerIpAddress();
-  const API_PORT = process.env.REACT_APP_API_PORT || 3000;
-  const SOCKET_PORT = process.env.REACT_APP_SOCKET_PORT || 3000;
+  const API_PORT = process.env.REACT_APP_API_PORT || 4000;
+  const SOCKET_PORT = process.env.REACT_APP_SOCKET_PORT || 4000;
 
   const APP_BASE_URL = `http://${BASE_IP}:${API_PORT}/api`;
   // const APP_SOCKET_URL = `http://${BASE_IP}:${SOCKET_PORT}`;

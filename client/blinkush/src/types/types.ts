@@ -22,6 +22,8 @@ export interface User {
     liveLocation: Location;
     name: string;
     phone: number;
+    email?: string;
+    branch?: string;
     role: "Customer" | "DeliveryPartner";
 }
 
@@ -36,6 +38,8 @@ export interface DeliveryLocation extends Location {
     address: string;
 }
 
+export type Status = 'available' | 'delivered' | 'confirmed' | 'cancelled' | 'arriving';
+
 export interface Order {
     __v: number;
     _id: string;
@@ -48,7 +52,7 @@ export interface Order {
     items: Item[];
     orderId: string;
     pickupLocation: DeliveryLocation;
-    status: string;
+    status: Status;
     totalPrice: number;
     updatedAt: string;
 }

@@ -11,7 +11,7 @@ import { Image } from 'react-native';
 const OrderSummary = ({ order }: { order: Order; }) => {
     const totalPrice = order?.items
         ?.reduce((total, cartItem) =>
-            total + (cartItem.item.price * cartItem.count), 0) || 0;
+            total + (cartItem?.item?.price * cartItem?.count), 0) || 0;
 
     return (
         <View style={styles.container}>
@@ -21,7 +21,7 @@ const OrderSummary = ({ order }: { order: Order; }) => {
                 </View>
                 <View>
                     <CustomText variant='h5'>Order Summary </CustomText>
-                    <CustomText variant='h6'>Order ID - #${order?.orderId} </CustomText>
+                    <CustomText variant='h6'>Order ID - #{order?.orderId} </CustomText>
                 </View>
             </View>
             {
@@ -33,14 +33,14 @@ const OrderSummary = ({ order }: { order: Order; }) => {
                             </View>
                             <View style={{ width: '55%' }}>
                                 <CustomText numberOfLines={2}>
-                                    {item?.item.name}
+                                    {item?.item?.name}
                                 </CustomText>
                                 <CustomText variant='h7'>
-                                    {item?.item.quantity}
+                                    {item?.item?.quantity}
                                 </CustomText>
                             </View>
                             <View style={{ width: '20%', alignItems: 'flex-end' }}>
-                                <CustomText style={{ alignSelf: 'flex-end' }}> ${item?.item.price * item?.count} </CustomText>
+                                <CustomText style={{ alignSelf: 'flex-end' }}> ${item?.item?.price * item?.count} </CustomText>
                                 <CustomText style={{ alignSelf: 'flex-end' }}> {item?.count}x  </CustomText>
                             </View>
                         </View>

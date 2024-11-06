@@ -7,7 +7,9 @@ import defaultCartImage from '@assets/products/10.png';
 import defaultCartImage2 from '@assets/icons/bucket.png';
 import coupon from '@assets/icons/coupon.png';
 import home from '@assets/icons/home.png';
+import deliveryBoy from '@assets/images/delivery_boy.png';
 import lottieOrderSuccess from '@assets/animations/confirm.json';
+
 export {
     logo,
     lottie,
@@ -18,5 +20,6 @@ export {
     defaultCartImage2,
     coupon,
     home,
-    lottieOrderSuccess
+    lottieOrderSuccess,
+    deliveryBoy
 };
