@@ -21,65 +21,63 @@ const DeliveryDashboard = () => {
 
   const renderOrderItem = ({ item, index }: { item: Order, index: number; }) => {
     return (
-    <OrderItem index={index} item={item} />
-  );
-};
+      <OrderItem index={index} item={item} />
+    );
+  };
 
 
-const fetchData = async () => {
-  if (!user?._id || !user?.branch) return;
+  const fetchData = async () => {
+    setData([]);
+    setRefreshing(true);
+    setLoading(true);
+    const data = await fetchOrders(selectedTab, user!._id, user!.branch as string);
+    setData(data);
+    setRefreshing(false);
+    setLoading(false);
+  };
 
-  setData([]);
-  setRefreshing(true);
-  setLoading(true);
-  const data = await fetchOrders(selectedTab, user?._id, user?.branch);
-  setData(data);
-  setRefreshing(false);
-  setLoading(false);
-};
+  useEffect(() => {
+    fetchData();
+  }, [selectedTab]);
 
-useEffect(() => {
-  fetchData();
-}, [selectedTab]);
+  return (
+    <View style={styles.container}>
+      <SafeAreaView>
+        <DeliveryHeader name={user?.name as string} email={user?.email as string} />
+      </SafeAreaView>
+      <View style={styles.subContainer}>
+        <TabBar selectedTab={selectedTab} onTabChange={setSelectedTab} />
+        <FlatList
+          data={data}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={fetchData}
+            />
+          }
+          ListEmptyComponent={() => {
+            if (loading) {
+              return (
+                <View style={styles.center}>
+                  <ActivityIndicator color={Colors.secondary} size='small' />
+                </View>
+              );
+            }
 
-return (
-  <View style={styles.container}>
-    <SafeAreaView>
-      <DeliveryHeader name={user?.name as string} email={user?.email as string} />
-    </SafeAreaView>
-    <View style={styles.subContainer}>
-      <TabBar selectedTab={selectedTab} onTabChange={setSelectedTab} />
-      <FlatList
-        data={data}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={fetchData}
-          />
-        }
-        ListEmptyComponent={() => {
-          if (loading) {
             return (
               <View style={styles.center}>
-                <ActivityIndicator color={Colors.secondary} size='small' />
+                <CustomText style={{ color: Colors.text }}>No orders found</CustomText>
               </View>
             );
-          }
+          }}
 
-          return (
-            <View style={styles.center}>
-              <CustomText style={{ color: Colors.text }}>No orders found</CustomText>
-            </View>
-          );
-        }}
-
-        renderItem={renderOrderItem}
-        keyExtractor={(item) => item.orderId}
-        contentContainerStyle={styles.flexListContainer}
-      />
+          renderItem={renderOrderItem}
+          keyExtractor={(item) => item.orderId}
+          contentContainerStyle={styles.flexListContainer}
+        />
+      </View>
     </View>
-  </View>
-);
+  );
 };
 
 export default DeliveryDashboard;

@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import {  User } from 'types/types';
+import { User } from 'types/types';
 import { Colors } from '@utils/Constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CustomText from '@components/ui/CustomText';
 
 const DeliveryDetails = ({ details }: { details: User; }) => {
+    // console.log(1212, details);
+
     return (
         <View style={styles.container}>
             <View style={styles.flexRow}>
@@ -36,7 +38,7 @@ const DeliveryDetails = ({ details }: { details: User; }) => {
                     <CustomText variant='h6' numberOfLines={2}>Receiver's contact no </CustomText>
                 </View>
             </View>
-            <CustomText style={{alignSelf:'center', marginTop: 5, opacity: 0.5}}>
+            <CustomText style={{ alignSelf: 'center', marginTop: 5, opacity: 0.5 }}>
                 Kushi Numdin E. X Blinkush
             </CustomText>
         </View>

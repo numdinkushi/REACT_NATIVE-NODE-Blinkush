@@ -10,5 +10,5 @@ export const formatIsoToCustom = (isoString: string) => {
     const month = months[date.getMonth()];
     const year = date.getUTCFullYear();
 
-    return `${hours}:${minutes}:${seconds} ${day} ${month} ${year} ${year}`;
+    return `${hours}:${minutes}:${seconds} ${day} ${month} ${year}`;
 };

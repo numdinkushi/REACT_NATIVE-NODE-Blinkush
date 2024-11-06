@@ -153,7 +153,14 @@ export const getOrders = async (req, reply) => {
 
         if (deliveryPartnerId) {
             query.deliveryPartner = deliveryPartnerId;
+        }
+
+        if (branchId) {
             query.branch = branchId;
+        }
+
+        if (status) {
+            query.status = status;
         }
 
         const orders = await Order.find(query).populate(
@@ -167,6 +174,7 @@ export const getOrders = async (req, reply) => {
         });
     }
 };
+
 
 export const getOrderById = async (req, reply) => {
     try {
