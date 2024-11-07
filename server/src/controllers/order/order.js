@@ -2,7 +2,6 @@ import Branch from "../../models/branch.js";
 import Order from "../../models/order.js";
 import { Customer, DeliveryPartner } from "../../models/user.js";
 
-
 export const createOrder = async (req, reply) => {
     try {
         const { userId } = req.user;
@@ -58,6 +57,43 @@ export const createOrder = async (req, reply) => {
     } catch (error) {
         console.error("Error creating order:", error);  // Log the error for debugging
         return reply.status(500).send({ message: "An error occurred", error });  // Send error response
+    }
+};
+
+// New function to add a review and rating
+export const addOrderReview = async (req, reply) => {
+    try {
+        const { orderId } = req.params;
+        const { userId } = req.user;
+        const { rating, review } = req.body;
+
+        if (!rating || rating < 1 || rating > 5) {
+            return reply.status(400).send({ message: "Rating must be between 1 and 5" });
+        }
+
+        const order = await Order.findById(orderId);
+        if (!order) return reply.status(404).send({ message: "Order not found" });
+
+        if (order.customer.toString() !== userId) {
+            return reply.status(401).send({ message: "Unauthorized" });
+        }
+
+        if (order.status !== 'delivered') {
+            return reply.status(400).send({ message: "Cannot review an order that is not delivered" });
+        }
+
+        order.review = {
+            rating,
+            review
+        };
+
+        await order.save();
+        return reply.send({ message: "Review added successfully", order });
+
+    } catch (error) {
+        return reply.status(500).send({
+            message: 'Failed to add review', error
+        });
     }
 };
 
@@ -175,7 +211,6 @@ export const getOrders = async (req, reply) => {
     }
 };
 
-
 export const getOrderById = async (req, reply) => {
     try {
         const { orderId } = req.params;
@@ -195,4 +230,3 @@ export const getOrderById = async (req, reply) => {
         });
     }
 };
-
