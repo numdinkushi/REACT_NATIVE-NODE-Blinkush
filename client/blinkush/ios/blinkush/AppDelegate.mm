@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-
+#import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
@@ -8,6 +8,7 @@
 {
   self.moduleName = @"blinkush";
   // You can add your custom initial props in the dictionary below.
+  [GMSServices provideAPIKey: @""]
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 

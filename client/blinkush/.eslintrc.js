@@ -20,6 +20,7 @@ module.exports = {
       sourceType: 'module',
   },
   rules: {
+    'prettier/prettier': 'off',
       // Add your custom rules here
   },
 };

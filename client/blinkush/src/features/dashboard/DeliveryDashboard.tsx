@@ -1,19 +1,19 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Colors } from '@utils/Constants';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@state/authStorage';
 import DeliveryHeader from '@components/delivery/DeliveryHeader';
 import TabBar from '@components/delivery/TabBar';
 import { FlatList } from 'react-native';
 import { fetchOrders } from 'service/orderService';
-import { RefreshControl } from 'react-native-gesture-handler';
 import CustomText from '@components/ui/CustomText';
 import { Order } from 'types/types';
 import OrderItem from '@components/delivery/OrderItem';
+import { reverseGeoCode } from 'service/mapService';
+import Geolocation from '@react-native-community/geolocation';
 
 const DeliveryDashboard = () => {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const [selectedTab, setSelectedTab] = useState<'available' | 'delivered'>('available');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Order[]>([]);
@@ -25,6 +25,20 @@ const DeliveryDashboard = () => {
     );
   };
 
+  const updateUsers = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        reverseGeoCode(latitude, longitude, setUser);
+      },
+      error => console.log('Error getting location', error),
+      { enableHighAccuracy: false, timeout: 15000 }
+    );
+  };
+
+  useEffect(() => {
+    updateUsers();
+  }, []);
 
   const fetchData = async () => {
     setData([]);

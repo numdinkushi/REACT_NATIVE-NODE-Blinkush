@@ -4,6 +4,7 @@ import { useAuthStore } from "@state/authStorage";
 import { resetAndNavigate } from "@utils/navigation-utils";
 import { appAxios } from "./apiInterceptors";
 import { getBaseURL } from "./config";
+import { User } from "types/types";
 const baseURL = getBaseURL();
 
 export const deliveryLogin = async (email: string, password: string) => {
@@ -36,7 +37,7 @@ export const customerLogin = async (phone: string) => {
     }
 };
 
-export const refetchUser = async (setUser: any) => {
+export const refetchUser = async (setUser: (user: User) => void) => {
     try {
         const response = await appAxios.get(`/user`,);
 
@@ -45,6 +46,16 @@ export const refetchUser = async (setUser: any) => {
         // return response;
     } catch (error) {
         console.log('refetchUser error: ' + error);
+    }
+};
+
+export const updateUserLocation = async (data: any, setUser: (user: User) => void) => {
+    try {
+        const response = await appAxios.patch(`/user`, data);
+
+        refetchUser(setUser);
+    } catch (error) {
+        console.log('updateUserLocation error: ' + error);
     }
 };
 
@@ -65,4 +76,4 @@ export const refresh_tokens = async () => {
         tokenStorage.clearAll();
         resetAndNavigate('CustomerLogin');
     }
-};
+}; 

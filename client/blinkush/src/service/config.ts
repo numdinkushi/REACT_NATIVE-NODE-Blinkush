@@ -5,7 +5,7 @@ let SOCKET_URL: string;
 
 const getServerIpAddress = async (): Promise<string> => {
   if (isProduction) {
-    return 'your-production-server-ip'; 
+    return 'your-production-server-ip';
   } else {
     // return '10.0.2.2' 
     return '192.168.225.243'; // Replace with your PC's IP (running server)
@@ -22,7 +22,7 @@ const initializeURLs = async () => {
   // const APP_SOCKET_URL = `http://${BASE_IP}:${SOCKET_PORT}`;
   const APP_SOCKET_URL = `ws://${BASE_IP}:${SOCKET_PORT}`;
 
-  console.log(2222, APP_BASE_URL)
+  console.log(2222, APP_BASE_URL);
 
   BASE_URL = !isProduction ? APP_BASE_URL : `https://your-production-api-url.com/api`;
   SOCKET_URL = !isProduction ? APP_SOCKET_URL : 'https://your-production-socket-url.com';
@@ -34,3 +34,4 @@ export const initializeConfig = async () => {
 
 export const getBaseURL = () => BASE_URL;
 export const getSocketURL = () => SOCKET_URL;
+export const GOOGLE_MAP_API = 'AIzaSyACPmtnnVIooeSMApVoqNn0GORR_EwXk9I';

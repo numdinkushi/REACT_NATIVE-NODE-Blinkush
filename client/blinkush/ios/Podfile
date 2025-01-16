@@ -16,7 +16,9 @@ end
 
 target 'blinkush' do
   config = use_native_modules!
-
+  # GOOGLE MAP CONFIG
+  rn_maps_path='../node_modules/react-native-maps'
+  # GOOGLE MAP CONFIG
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
