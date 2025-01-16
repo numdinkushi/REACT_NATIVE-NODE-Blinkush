@@ -23,3 +23,5 @@ export {
     lottieOrderSuccess,
     deliveryBoy
 };
+
+export const googleAPIEndPoint = 'https://maps.google.com/maps/api/geocode/json';

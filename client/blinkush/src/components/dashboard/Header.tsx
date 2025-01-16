@@ -1,14 +1,36 @@
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import CustomText from '@components/ui/CustomText';
 import { Fonts } from '@utils/Constants';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useAuthStore } from '@state/authStorage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { navigate } from '@utils/navigation-utils';
+import Geolocation from '@react-native-community/geolocation';
+import { reverseGeoCode } from 'service/mapService';
 
 const Header = ({ showNotice }: { showNotice: () => void; }) => {
     const { setUser, user } = useAuthStore();
+    const updateUserLocation = async () => {
+        Geolocation.requestAuthorization();
+        Geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                reverseGeoCode(latitude, longitude, setUser);
+            },
+            (error) => {
+                console.log('Error getting location', error);
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 20000,
+            }
+        );
+    };
+
+    useEffect(() => {
+        updateUserLocation();
+    }, []);
 
     return (
         <View style={styles.subContainer}>
