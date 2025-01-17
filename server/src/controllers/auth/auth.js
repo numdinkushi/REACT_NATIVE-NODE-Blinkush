@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Customer, DeliveryPartner } from "../../models/user.js";
+import { UserRoles } from "../../constants/constants.js";
 
 const generateTokens = (user) => {
     const accessToken = jwt.sign(
@@ -97,7 +98,7 @@ export const refreshToken = async (req, reply) => {
         console.log("Decoded token:", decoded); // Log decoded token details
 
         let user;
-        if (decoded.role === 'Customer') {
+        if (decoded.role === UserRoles.CUSTOMER) {
             user = await Customer.findById(decoded.userId);
         } else if (decoded.role === 'DeliveryPartner') {
             user = await DeliveryPartner.findById(decoded.userId);
@@ -108,7 +109,7 @@ export const refreshToken = async (req, reply) => {
         if (!user) {
             return reply.status(403).send({ message: 'Invalid Refresh token' });
         }
-  
+
         const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
         return reply.send({
             message: 'Token refreshed successfully',
@@ -121,48 +122,15 @@ export const refreshToken = async (req, reply) => {
         return reply.status(403).send({ message: 'Invalid or expired refresh token', error: error.message });
     }
 };
-//     const { refreshToken } = req.body;
-
-//     if (!refreshToken) {
-//         return reply.status(401).send({ message: 'Refresh token required' });
-//     }
-
-//     try {
-//         const decoded =  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-//         let user;
-
-//         if (decoded.role === 'Customer') {
-//             user = await Customer.findById(decoded.userId);
-//         } else if (decoded.role === 'DeliveryPartner') {
-//             user = await DeliveryPartner.findById(decoded.userId);
-//         } else {
-//             return reply.status(403).send({ message: 'Invalid role' });
-//         }
-
-//         // if (!user) {
-//         //     return reply.status(403).send({ message: 'Invalid Refresh token' });
-//         // }
-
-//         const { accessToken, refreshToken, refreshToken: newRefreshToken } = generateTokens(user);
-//         return reply.send({
-//             message: 'Token refreshed successfully',
-//             accessToken,
-//             refreshToken: newRefreshToken,
-//         });
-
-//     } catch (error) {
-//         return reply.status(403).send({ message: 'Invalid refresh token', error });
-//     }
-// };
 
 export const fetchUser = async (req, reply) => {
     try {
         const { userId, role } = req.user;
         let user;
 
-        if (role === 'Customer') {
+        if (role === UserRoles.CUSTOMER) {
             user = await Customer.findById(userId);
-        } else if (role === 'DeliveryPartner') {
+        } else if (role === UserRoles.DELIVERY_PARTNER) {
             user = await DeliveryPartner.findById(userId);
         } else {
             return reply.status(403).send({ message: 'Invalid role' });
