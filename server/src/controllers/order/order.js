@@ -230,3 +230,23 @@ export const getOrderById = async (req, reply) => {
         });
     }
 };
+
+
+// Get the latest order
+export const getLatestOrder = async (req, reply) => {
+    try {
+        const latestOrder = await Order.findOne().sort({ createdAt: -1 }).populate(
+            "customer branch items.item deliveryPartner"
+        );
+
+        if (!latestOrder) {
+            return reply.status(404).send({ message: "No orders found" });
+        }
+
+        return reply.send(latestOrder);
+    } catch (error) {
+        return reply.status(500).send({
+            message: 'Failed to retrieve the latest order', error
+        });
+    }
+};
