@@ -251,22 +251,46 @@ export const getLatestOrder = async (req, reply) => {
     }
 };
 
-// New function to limit order import
-export const limitOrderImport = async (req, reply) => {
+export const limitOrder = async (req, reply) => {
     try {
-        const currentOrderCount = await Order.countDocuments();
+        // Log the start of the order import limit check
+        console.log(`Checking order import limit for user: ${req.user.userId}`);
 
-        if (currentOrderCount >= ORDER_LIMIT) {
-            return reply.status(400).send({ message: `Order limit of ${ORDER_LIMIT} has been reached` });
+        // Ensure the order limit is defined
+        if (typeof ORDER_LIMIT !== 'number' || ORDER_LIMIT <= 0) {
+            return reply.status(500).send({ message: "Order limit is not properly configured" });
         }
 
-        // Proceed with order import logic here
-        // For example, you can call createOrder function or any other logic to import orders
+        // Atomic check to avoid race conditions
+        const session = await Order.startSession();
+        session.startTransaction();
 
-        return reply.send({ message: "Order import limit check passed" });
+        try {
+            const currentOrderCount = await Order.countDocuments({}, { session });
+
+            if (currentOrderCount >= ORDER_LIMIT) {
+                await session.abortTransaction();
+                session.endSession();
+                return reply.status(400).send({ message: `Order limit of ${ORDER_LIMIT} has been reached` });
+            }
+
+            // Proceed with order import logic here
+            // For example, you can call createOrder function or any other logic to import orders
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return reply.send({ message: "Order import limit check passed" });
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            throw error;
+        }
     } catch (error) {
+        console.error("Error checking order import limit:", error);
         return reply.status(500).send({
-            message: 'Failed to check order import limit', error
+            message: 'Failed to check order import limit',
+            error: error.message
         });
     }
 };
