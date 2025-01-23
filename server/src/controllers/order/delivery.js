@@ -75,3 +75,26 @@ export const createOrder = async (req, reply) => {
         return reply.status(500).send({ message: "An error occurred", error });  // Send error response
     }
 };
+
+export const assignDeliveryPartner = async (req, reply) => {
+    try {
+        const { orderId } = req.params;
+        const { deliveryPartnerId } = req.body;
+        const deliveryPartner = await DeliveryPartner.findById(deliveryPartnerId);
+
+        if (!deliveryPartner) {
+            return reply.status(404).send({ message: "Delivery partner not found" });
+        }
+
+        const order = await Order.findByIdAndUpdate(orderId, { deliveryPartner: deliveryPartnerId }, { new: true });
+
+        if (!order) {
+            return reply.status(404).send({ message: "Order not found" });
+        }
+
+        return reply.status(200).send(order);
+    } catch (error) {
+        console.error("Error assigning delivery partner:", error);
+        return reply.status(500).send({ message: "An error occurred", error });
+    }
+};
