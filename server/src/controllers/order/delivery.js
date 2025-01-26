@@ -98,3 +98,24 @@ export const assignDeliveryPartner = async (req, reply) => {
         return reply.status(500).send({ message: "An error occurred", error });
     }
 };
+
+export const trackOrder = async (req, reply) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Order.findById(orderId).populate('deliveryPartner');
+
+        if (!order) {
+            return reply.status(404).send({ message: "Order not found" });
+        }
+
+        const deliveryPartnerLocation = order.deliveryPartner ? order.deliveryPartner.liveLocation : null;
+
+        return reply.status(200).send({
+            orderStatus: order.status,
+            deliveryPartnerLocation
+        });
+    } catch (error) {
+        console.error("Error tracking order:", error);
+        return reply.status(500).send({ message: "An error occurred", error });
+    }
+}
