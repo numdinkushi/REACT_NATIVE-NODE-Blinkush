@@ -74,3 +74,32 @@ export const getCategories = async (req, reply) => {
         reply.status(500).send({ message: "Error retrieving categories" });
     }
 };
+
+export const validatePaginationParams = (req) => {
+    const { 
+        page = 1, 
+        limit = 10, 
+        sortBy = 'createdAt', 
+        sortOrder = 'desc',
+        search = '',
+        status = '',
+        isActive
+    } = req.query;
+
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
+    if (pageNum < 1) throw new Error('Page must be greater than 0');
+    if (limitNum < 1 || limitNum > 100) throw new Error('Limit must be between 1 and 100');
+    if (!['asc', 'desc'].includes(sortOrder)) throw new Error('Sort order must be asc or desc');
+
+    return {
+        page: pageNum,
+        limit: limitNum,
+        sortBy,
+        sortOrder,
+        search: search.trim(),
+        status: status.trim(),
+        isActive: isActive !== undefined ? isActive === 'true' : undefined
+    };
+};
