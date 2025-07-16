@@ -35,3 +35,47 @@ export const getAllCategories = async (req, reply) => {
         reply.status(500).send({ message: "Error retrieving categories" });
     }
 };
+
+//SOFT DELETE
+export const deleteCategoryHandler = async (req, reply) => {
+    try {
+        const { id } = req.params;
+        const category = await deleteCategory(id);
+        
+        if (!category) {
+            return reply.status(404).send({ 
+                success: false, 
+                message: "Category not found" 
+            });
+        }
+        
+        reply.send({
+            success: true,
+            message: "Category deleted successfully",
+            data: category
+        });
+    } catch (error) {
+        console.error(error);
+        reply.status(500).send({ 
+            success: false, 
+            message: "Error deleting category" 
+        });
+    }
+};
+
+// NEW: Get category statistics
+export const getCategoryStatsHandler = async (req, reply) => {
+    try {
+        const stats = await getCategoryStats();
+        reply.send({
+            success: true,
+            data: stats
+        });
+    } catch (error) {
+        console.error(error);
+        reply.status(500).send({ 
+            success: false, 
+            message: "Error retrieving category statistics" 
+        });
+    }
+};
