@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
     StyleSheet,
     View,
@@ -7,6 +7,7 @@ import {
     FlatList,
     Alert,
     Image,
+    TextInput,
 } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,6 +17,21 @@ import { Colors, Fonts } from '@utils/Constants';
 import { navigate } from '@utils/navigation-utils';
 import { CartItem } from '@state/cartStore';
 
+// Constants
+const PROMO_CODES = {
+    SAVE10: 'save10',
+} as const;
+
+const FEES = {
+    DELIVERY: 2.99,
+    TAX_RATE: 0.08,
+} as const;
+
+const DISCOUNT_RATES = {
+    [PROMO_CODES.SAVE10]: 0.1,
+} as const;
+
+// Types
 interface CartScreenProps {
     cartItems: CartItem[];
     updateQuantity: (id: string, quantity: number) => void;
@@ -23,34 +39,260 @@ interface CartScreenProps {
     clearCart: () => void;
 }
 
+interface OrderSummary {
+    subtotal: number;
+    deliveryFee: number;
+    tax: number;
+    discount: number;
+    total: number;
+}
+
+// Custom Hooks
+const usePromoCode = () => {
+    const [promoCode, setPromoCode] = useState('');
+    const [promoApplied, setPromoApplied] = useState(false);
+    const [discount, setDiscount] = useState(0);
+
+    const applyPromoCode = useCallback((subtotal: number) => {
+        const normalizedCode = promoCode.toLowerCase();
+        const discountRate = DISCOUNT_RATES[normalizedCode as keyof typeof DISCOUNT_RATES];
+
+        if (discountRate) {
+            setDiscount(subtotal * discountRate);
+            setPromoApplied(true);
+            Alert.alert('Success', `Promo code applied! ${(discountRate * 100)}% discount added.`);
+        } else {
+            Alert.alert('Error', 'Invalid promo code');
+        }
+    }, [promoCode]);
+
+    const resetPromoCode = useCallback(() => {
+        setPromoCode('');
+        setPromoApplied(false);
+        setDiscount(0);
+    }, []);
+
+    return {
+        promoCode,
+        setPromoCode,
+        promoApplied,
+        discount,
+        applyPromoCode,
+        resetPromoCode,
+    };
+};
+
+// Utility Functions
+const calculateOrderSummary = (cartItems: CartItem[], discount: number): OrderSummary => {
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.item.price * item.count), 0);
+    const deliveryFee = FEES.DELIVERY;
+    const tax = subtotal * FEES.TAX_RATE;
+    const total = subtotal + deliveryFee + tax - discount;
+
+    return { subtotal, deliveryFee, tax, discount, total };
+};
+
+// Components
+const EmptyCartView: React.FC = () => (
+    <View style={styles.emptyCart}>
+        <Icon name="cart-outline" size={80} color={Colors.border} />
+        <CustomText variant="h5" style={styles.emptyCartText}>
+            Your cart is empty
+        </CustomText>
+        <CustomText variant="h7" style={styles.emptyCartSubtext}>
+            Add some delicious items to get started
+        </CustomText>
+        <TouchableOpacity
+            style={styles.continueShoppingButton}
+            onPress={() => navigate('ProductCategories')}
+        >
+            <CustomText variant="h6" style={styles.continueShoppingText}>
+                Continue Shopping
+            </CustomText>
+        </TouchableOpacity>
+    </View>
+);
+
+interface CartItemRowProps {
+    item: CartItem;
+    onQuantityChange: (id: string, change: number) => void;
+    onRemove: (id: string) => void;
+}
+
+const CartItemRow: React.FC<CartItemRowProps> = ({ item, onQuantityChange, onRemove }) => (
+    <View style={styles.cartItem}>
+        <Image source={{ uri: item.item.image }} style={styles.itemImage} />
+        <View style={styles.itemDetails}>
+            <CustomText variant="h6" fontFamily={Fonts.Medium}>
+                {item.item.name}
+            </CustomText>
+            <CustomText variant="h8" style={styles.itemPrice}>
+                ${item.item.price.toFixed(2)}
+            </CustomText>
+            {item.customizations && (
+                <CustomText variant="h9" style={styles.customizations}>
+                    {item.customizations.join(', ')}
+                </CustomText>
+            )}
+        </View>
+        <View style={styles.quantityControls}>
+            <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={() => onQuantityChange(item.item._id, -1)}
+            >
+                <Icon name="minus" size={16} color={Colors.primary} />
+            </TouchableOpacity>
+            <CustomText variant="h6" style={styles.quantityText}>
+                {item.count}
+            </CustomText>
+            <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={() => onQuantityChange(item.item._id, 1)}
+            >
+                <Icon name="plus" size={16} color={Colors.primary} />
+            </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+            style={styles.removeButton}
+            onPress={() => onRemove(item.item._id)}
+        >
+            <Icon name="trash-can-outline" size={20} color={Colors.error} />
+        </TouchableOpacity>
+    </View>
+);
+
+interface PromoCodeSectionProps {
+    promoCode: string;
+    promoApplied: boolean;
+    onPromoCodeChange: (code: string) => void;
+    onApplyPromo: () => void;
+}
+
+const PromoCodeSection: React.FC<PromoCodeSectionProps> = ({
+    promoCode,
+    promoApplied,
+    onPromoCodeChange,
+    onApplyPromo,
+}) => (
+    <View style={styles.promoSection}>
+        <CustomText variant="h6" fontFamily={Fonts.Medium} style={styles.sectionTitle}>
+            Promo Code
+        </CustomText>
+        <View style={styles.promoInputContainer}>
+            <TextInput
+                style={styles.promoInput}
+                placeholder="Enter promo code"
+                value={promoCode}
+                onChangeText={onPromoCodeChange}
+                editable={!promoApplied}
+            />
+            <TouchableOpacity
+                style={[styles.promoButton, promoApplied && styles.promoButtonApplied]}
+                onPress={onApplyPromo}
+                disabled={promoApplied}
+            >
+                <CustomText variant="h7" style={styles.promoButtonText}>
+                    {promoApplied ? 'Applied' : 'Apply'}
+                </CustomText>
+            </TouchableOpacity>
+        </View>
+    </View>
+);
+
+interface OrderSummarySectionProps {
+    orderSummary: OrderSummary;
+}
+
+const OrderSummarySection: React.FC<OrderSummarySectionProps> = ({ orderSummary }) => (
+    <View style={styles.summarySection}>
+        <CustomText variant="h6" fontFamily={Fonts.Medium} style={styles.sectionTitle}>
+            Order Summary
+        </CustomText>
+
+        <View style={styles.summaryRow}>
+            <CustomText variant="h7">Subtotal</CustomText>
+            <CustomText variant="h7">${orderSummary.subtotal.toFixed(2)}</CustomText>
+        </View>
+
+        <View style={styles.summaryRow}>
+            <CustomText variant="h7">Delivery Fee</CustomText>
+            <CustomText variant="h7">${orderSummary.deliveryFee.toFixed(2)}</CustomText>
+        </View>
+
+        <View style={styles.summaryRow}>
+            <CustomText variant="h7">Tax</CustomText>
+            <CustomText variant="h7">${orderSummary.tax.toFixed(2)}</CustomText>
+        </View>
+
+        {orderSummary.discount > 0 && (
+            <View style={styles.summaryRow}>
+                <CustomText variant="h7" style={styles.discountText}>Discount</CustomText>
+                <CustomText variant="h7" style={styles.discountText}>
+                    -${orderSummary.discount.toFixed(2)}
+                </CustomText>
+            </View>
+        )}
+
+        <View style={[styles.summaryRow, styles.totalRow]}>
+            <CustomText variant="h5" fontFamily={Fonts.Medium}>Total</CustomText>
+            <CustomText variant="h5" fontFamily={Fonts.Medium}>
+                ${orderSummary.total.toFixed(2)}
+            </CustomText>
+        </View>
+    </View>
+);
+
+interface CheckoutButtonProps {
+    total: number;
+    cartItems: CartItem[];
+}
+
+const CheckoutButton: React.FC<CheckoutButtonProps> = ({ total, cartItems }) => (
+    <View style={styles.checkoutContainer}>
+        <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={() => navigate('Checkout', { cartItems, total })}
+        >
+            <CustomText variant="h6" style={styles.checkoutText}>
+                Proceed to Checkout • ${total.toFixed(2)}
+            </CustomText>
+        </TouchableOpacity>
+    </View>
+);
+
+// Main Component
 const CartScreen: React.FC<CartScreenProps> = ({
     cartItems,
     updateQuantity,
     removeFromCart,
     clearCart,
 }) => {
-    const [promoCode, setPromoCode] = useState('');
-    const [promoApplied, setPromoApplied] = useState(false);
-    const [discount, setDiscount] = useState(0);
+    const {
+        promoCode,
+        setPromoCode,
+        promoApplied,
+        discount,
+        applyPromoCode,
+    } = usePromoCode();
 
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.item.price * item.count), 0);
-    const deliveryFee = 2.99;
-    const tax = subtotal * 0.08; // 8% tax
-    const total = subtotal + deliveryFee + tax - discount;
+    const orderSummary = useMemo(
+        () => calculateOrderSummary(cartItems, discount),
+        [cartItems, discount]
+    );
 
-    const handleQuantityChange = (id: string, change: number) => {
+    const handleQuantityChange = useCallback((id: string, change: number) => {
         const item = cartItems.find(item => item.item._id === id);
-        if (item) {
-            const newQuantity = item.count + change;
-            if (newQuantity > 0) {
-                updateQuantity(id, newQuantity);
-            } else {
-                removeFromCart(id);
-            }
-        }
-    };
+        if (!item) return;
 
-    const handleRemoveItem = (id: string) => {
+        const newQuantity = item.count + change;
+        if (newQuantity > 0) {
+            updateQuantity(id, newQuantity);
+        } else {
+            removeFromCart(id);
+        }
+    }, [cartItems, updateQuantity, removeFromCart]);
+
+    const handleRemoveItem = useCallback((id: string) => {
         Alert.alert(
             'Remove Item',
             'Are you sure you want to remove this item from your cart?',
@@ -59,9 +301,9 @@ const CartScreen: React.FC<CartScreenProps> = ({
                 { text: 'Remove', style: 'destructive', onPress: () => removeFromCart(id) },
             ]
         );
-    };
+    }, [removeFromCart]);
 
-    const handleClearCart = () => {
+    const handleClearCart = useCallback(() => {
         Alert.alert(
             'Clear Cart',
             'Are you sure you want to clear your entire cart?',
@@ -70,82 +312,25 @@ const CartScreen: React.FC<CartScreenProps> = ({
                 { text: 'Clear', style: 'destructive', onPress: clearCart },
             ]
         );
-    };
+    }, [clearCart]);
 
-    const applyPromoCode = () => {
-        // Mock promo code logic
-        if (promoCode.toLowerCase() === 'save10') {
-            setDiscount(subtotal * 0.1);
-            setPromoApplied(true);
-            Alert.alert('Success', 'Promo code applied! 10% discount added.');
-        } else {
-            Alert.alert('Error', 'Invalid promo code');
-        }
-    };
+    const handleApplyPromoCode = useCallback(() => {
+        applyPromoCode(orderSummary.subtotal);
+    }, [applyPromoCode, orderSummary.subtotal]);
 
-    const renderCartItem = ({ item }: { item: CartItem; }) => (
-        <View style={styles.cartItem}>
-            <Image source={{ uri: item.item.image }} style={styles.itemImage} />
-            <View style={styles.itemDetails}>
-                <CustomText variant="h6" fontFamily={Fonts.Medium}>
-                    {item.item.name}
-                </CustomText>
-                <CustomText variant="h8" style={styles.itemPrice}>
-                    ${item.item.price.toFixed(2)}
-                </CustomText>
-                {item.customizations && (
-                    <CustomText variant="h9" style={styles.customizations}>
-                        {item.customizations.join(', ')}
-                    </CustomText>
-                )}
-            </View>
-            <View style={styles.quantityControls}>
-                <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() => handleQuantityChange(item.item._id, -1)}
-                >
-                    <Icon name="minus" size={16} color={Colors.primary} />
-                </TouchableOpacity>
-                <CustomText variant="h6" style={styles.quantityText}>
-                    {item.count}
-                </CustomText>
-                <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() => handleQuantityChange(item.item._id, 1)}
-                >
-                    <Icon name="plus" size={16} color={Colors.primary} />
-                </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => handleRemoveItem(item.item._id)}
-            >
-                <Icon name="trash-can-outline" size={20} color={Colors.error} />
-            </TouchableOpacity>
-        </View>
-    );
+    const renderCartItem = useCallback(({ item }: { item: CartItem }) => (
+        <CartItemRow
+            item={item}
+            onQuantityChange={handleQuantityChange}
+            onRemove={handleRemoveItem}
+        />
+    ), [handleQuantityChange, handleRemoveItem]);
 
     if (cartItems.length === 0) {
         return (
             <View style={styles.container}>
                 <CustomHeader title="Your Cart" />
-                <View style={styles.emptyCart}>
-                    <Icon name="cart-outline" size={80} color={Colors.border} />
-                    <CustomText variant="h5" style={styles.emptyCartText}>
-                        Your cart is empty
-                    </CustomText>
-                    <CustomText variant="h7" style={styles.emptyCartSubtext}>
-                        Add some delicious items to get started
-                    </CustomText>
-                    <TouchableOpacity
-                        style={styles.continueShoppingButton}
-                        onPress={() => navigate('ProductCategories')}
-                    >
-                        <CustomText variant="h6" style={styles.continueShoppingText}>
-                            Continue Shopping
-                        </CustomText>
-                    </TouchableOpacity>
-                </View>
+                <EmptyCartView />
             </View>
         );
     }
@@ -162,7 +347,6 @@ const CartScreen: React.FC<CartScreenProps> = ({
             />
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                {/* Cart Items */}
                 <FlatList
                     data={cartItems}
                     renderItem={renderCartItem}
@@ -171,77 +355,17 @@ const CartScreen: React.FC<CartScreenProps> = ({
                     style={styles.cartList}
                 />
 
-                {/* Promo Code Section */}
-                <View style={styles.promoSection}>
-                    <CustomText variant="h6" fontFamily={Fonts.Medium} style={styles.sectionTitle}>
-                        Promo Code
-                    </CustomText>
-                    <View style={styles.promoInputContainer}>
-                        <TextInput
-                            style={styles.promoInput}
-                            placeholder="Enter promo code"
-                            value={promoCode}
-                            onChangeText={setPromoCode}
-                            editable={!promoApplied}
-                        />
-                        <TouchableOpacity
-                            style={[styles.promoButton, promoApplied && styles.promoButtonApplied]}
-                            onPress={applyPromoCode}
-                            disabled={promoApplied}
-                        >
-                            <CustomText variant="h7" style={styles.promoButtonText}>
-                                {promoApplied ? 'Applied' : 'Apply'}
-                            </CustomText>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <PromoCodeSection
+                    promoCode={promoCode}
+                    promoApplied={promoApplied}
+                    onPromoCodeChange={setPromoCode}
+                    onApplyPromo={handleApplyPromoCode}
+                />
 
-                {/* Order Summary */}
-                <View style={styles.summarySection}>
-                    <CustomText variant="h6" fontFamily={Fonts.Medium} style={styles.sectionTitle}>
-                        Order Summary
-                    </CustomText>
-
-                    <View style={styles.summaryRow}>
-                        <CustomText variant="h7">Subtotal</CustomText>
-                        <CustomText variant="h7">${subtotal.toFixed(2)}</CustomText>
-                    </View>
-
-                    <View style={styles.summaryRow}>
-                        <CustomText variant="h7">Delivery Fee</CustomText>
-                        <CustomText variant="h7">${deliveryFee.toFixed(2)}</CustomText>
-                    </View>
-
-                    <View style={styles.summaryRow}>
-                        <CustomText variant="h7">Tax</CustomText>
-                        <CustomText variant="h7">${tax.toFixed(2)}</CustomText>
-                    </View>
-
-                    {discount > 0 && (
-                        <View style={styles.summaryRow}>
-                            <CustomText variant="h7" style={styles.discountText}>Discount</CustomText>
-                            <CustomText variant="h7" style={styles.discountText}>-${discount.toFixed(2)}</CustomText>
-                        </View>
-                    )}
-
-                    <View style={[styles.summaryRow, styles.totalRow]}>
-                        <CustomText variant="h5" fontFamily={Fonts.Medium}>Total</CustomText>
-                        <CustomText variant="h5" fontFamily={Fonts.Medium}>${total.toFixed(2)}</CustomText>
-                    </View>
-                </View>
+                <OrderSummarySection orderSummary={orderSummary} />
             </ScrollView>
 
-            {/* Checkout Button */}
-            <View style={styles.checkoutContainer}>
-                <TouchableOpacity
-                    style={styles.checkoutButton}
-                    onPress={() => navigate('Checkout', { cartItems, total })}
-                >
-                    <CustomText variant="h6" style={styles.checkoutText}>
-                        Proceed to Checkout • ${total.toFixed(2)}
-                    </CustomText>
-                </TouchableOpacity>
-            </View>
+            <CheckoutButton total={orderSummary.total} cartItems={cartItems} />
         </View>
     );
 };
@@ -397,4 +521,4 @@ const styles = StyleSheet.create({
         color: 'white',
         fontFamily: Fonts.Medium,
     },
-}); 
+});
