@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import Navigation from '@navigation/Navigation';
 import { initializeConfig } from 'service/config';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ThemeProvider } from '@utils/ThemeContext';
 
 const App = () => {
   useEffect(() => {
@@ -17,7 +18,9 @@ const App = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Navigation />
+      <ThemeProvider>
+        <Navigation />
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 };

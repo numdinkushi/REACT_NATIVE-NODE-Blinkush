@@ -2,7 +2,8 @@ import { Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from
 import React, { useState } from 'react';
 import CustomHeader from '@components/ui/CustomHeader';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Colors } from '@utils/Constants';
+import { Colors, Fonts } from '@utils/Constants';
+import { useTheme } from '@utils/ThemeContext';
 import OrderList from './OrderList';
 import { coupon, home } from 'constants/files/filesConstants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,6 +19,7 @@ import { createOrder } from 'service/orderService';
 
 const ProductOrder = () => {
     const { getTotalPrice, getItemCount, cart, clearCart } = useCartStore();
+    const { theme } = useTheme();
     const totalItemPrice = getTotalPrice();
     const { user, setCurrentOrder, currentOrder } = useAuthStore();
     const [loading, setLoading] = useState(false);
@@ -49,114 +51,98 @@ const ProductOrder = () => {
             clearCart();
             navigate('OrderSuccess', { ...data });
         } else {
-            Alert.alert('There was an error');
+            Alert.alert('Failed to place the order');
         }
 
         setLoading(false);
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <CustomHeader title='Checkout' />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <OrderList />
-                <View style={styles.flexRowBetween}>
+                <View style={[styles.flexRowBetween, { backgroundColor: theme.backgroundSecondary }]}>
                     <View style={styles.flexRow}>
-                        <Image source={coupon} style={{ width: 25, height: 25 }} />
-                        <CustomText variant='h4'>
+                        <Image source={coupon} style={styles.img} />
+                        <CustomText variant='h6'>
                             Use Coupons
                         </CustomText>
                     </View>
-                    <Icon name='chevron-right' />
+                    <Icon name='chevron-right' color={theme.text} size={RFValue(16)} />
                 </View>
-                <BillDetails totalItemPrice={totalItemPrice} />
-                <View style={styles.flexRowBetween}>
-                    <View>
-                        <CustomText variant='h5' style={{ fontWeight: 500 }}>Cancellation Policy</CustomText>
-                        <CustomText variant='h6' style={styles.cancelText}>Orders cannot be cancelled once packaged for delivery. In case of unexpected delivery, a refund will be provided if applicable</CustomText>
+
+                <BillDetails />
+
+                <View style={[styles.flexRowBetween, { backgroundColor: theme.backgroundSecondary }]}>
+                    <View style={styles.flexRow}>
+                        <Image source={home} style={styles.img} />
+                        <View style={{ width: '77%' }}>
+                            <CustomText variant='h6'>
+                                Delivering to Home
+                            </CustomText>
+                            <CustomText variant='h9' style={{ opacity: 0.6 }}>
+                                {user?.address || 'Address is not set'}
+                            </CustomText>
+                        </View>
                     </View>
+                    <Icon name='chevron-right' color={theme.text} size={RFValue(16)} />
                 </View>
-            </ScrollView>
-            <View style={hocStyles.cartContainer}>
-                <View style={styles.absoluteContainer}>
-                    <View style={styles.addressContainer}>
-                        <View style={styles.flexRow}>
-                            <Image source={home} style={{ width: 20, height: 20 }} />
-                            <View style={{ width: '75%' }}>
-                                <CustomText variant='h6'> Delivering to Home</CustomText>
-                                <CustomText variant='h7' numberOfLines={2} style={{ opacity: 0.6 }}> {user?.address}</CustomText>
+
+                <View style={[hocStyles.cartContainer, { backgroundColor: theme.surface }]}>
+                    <View style={hocStyles.cartContainer}>
+                        <View style={styles.flexRowBetween}>
+                            <View>
+                                <CustomText variant='h7' fontFamily={Fonts.Medium}>
+                                    ₹{totalItemPrice + 34}.00
+                                </CustomText>
+                                <CustomText
+                                    variant='h9'
+                                    style={{ opacity: 0.6, marginTop: 2 }}>
+                                    TOTAL
+                                </CustomText>
                             </View>
-                        </View>
-                        <TouchableOpacity>
-                            <CustomText variant='h6' style={{ color: Colors.secondary }}>Change</CustomText>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.paymentGateway}>
-                        <View style={{ width: '30%' }}>
-                            <CustomText fontSize={RFValue(8)}>💸 PAY USING </CustomText>
-                            <CustomText variant='h7' style={{ marginTop: 2 }}>Cash on Delivery</CustomText>
-                        </View>
-                        <View style={{ width: '60%' }}>
                             <ArrowButton
                                 loading={loading}
-                                price={totalItemPrice}
+                                price={totalItemPrice + 34}
                                 title='Place Order'
-                                onPress={async () => { await handlePlaceOrder(); }}
+                                onPress={handlePlaceOrder}
                             />
                         </View>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
     );
 };
 
-export default ProductOrder;
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     scrollContainer: {
         backgroundColor: Colors.backgroundSecondary,
         padding: 10,
-        paddingBottom: 250
+        paddingBottom: 250,
     },
     flexRowBetween: {
-        backgroundColor: 'white',
-        alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 10,
+        alignItems: 'center',
+        marginVertical: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 12,
         borderRadius: 15,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     flexRow: {
         alignItems: 'center',
         flexDirection: 'row',
         gap: 10,
     },
-    cancelText: {
-        marginTop: 4,
-        opacity: 0.6,
+    img: {
+        width: 30,
+        height: 30,
     },
-    absoluteContainer: {
-        marginVertical: 15,
-        marginBottom: Platform.OS === 'ios' ? 30 : 10
-    },
-    addressContainer: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-        paddingBottom: 10,
-        borderBottomWidth: 0.7,
-        borderColor: Colors.border
-    },
-    paymentGateway: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingLeft: 14
-    }
 });
+
+export default ProductOrder;

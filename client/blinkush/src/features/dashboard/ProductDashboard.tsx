@@ -10,6 +10,7 @@ import Content from '@components/dashboard/Content';
 import CustomText from '@components/ui/CustomText';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Fonts } from '@utils/Constants';
+import { useTheme } from '@utils/ThemeContext';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import withCart from '@features/cart/WithCart';
@@ -19,6 +20,7 @@ const NOTICE_HEIGHT = -(NoticeHeight + 15);
 
 const ProductDashboard = () => {
   const { scrollY, expand } = useCollapsibleContext();
+  const { theme } = useTheme();
   const previousScroll = useRef<number>(0);
 
   const backToTopStyle = useAnimatedStyle(() => {
@@ -90,7 +92,7 @@ const ProductDashboard = () => {
           </TouchableOpacity>
         </Animated.View>
 
-        <CollapsibleContainer style={styles.panelContainer}>
+        <CollapsibleContainer style={[styles.panelContainer, { backgroundColor: theme.background }]}>
           <CollapsibleHeaderContainer containerStyle={styles.transparent}>
             <AnimatedHeader
               showNotice={showNotice}
@@ -99,20 +101,11 @@ const ProductDashboard = () => {
           </CollapsibleHeaderContainer>
           <CollapsibleScrollView
             nestedScrollEnabled
-            style={styles.panelContainer}
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+            style={[styles.container, { backgroundColor: theme.background }]}
+          >
             <Content />
-            <View style={{ backgroundColor: '#f8f8f8', padding: 20 }}>
-              <CustomText
-                fontSize={RFValue(42)}
-                style={{ opacity: 0.2, fontWeight: 'bold' }}>
-                India's last minute app 🥭
-              </CustomText>
-              <CustomText
-                style={{ marginTop: 10, paddingBottom: 100, opacity: 0.2, fontWeight: 'bold' }}>
-                Developed by ❤️ Kushi Numdin
-              </CustomText>
-            </View>
+            <View style={{ backgroundColor: theme.background, padding: 100 }} />
           </CollapsibleScrollView>
         </CollapsibleContainer>
       </>
@@ -121,16 +114,16 @@ const ProductDashboard = () => {
 };
 
 const styles = StyleSheet.create({
-  panelContainer: {
-    flex: 1
+  container: {
+    flex: 1,
   },
-  transparent: {
-    backgroundColor: 'transparent',
+  panelContainer: {
+    flex: 1,
   },
   backToTopButton: {
     position: 'absolute',
     alignSelf: 'center',
-    top: Platform.OS === 'ios' ? screenHeight * 0.18 : 100,
+    top: Platform.OS === 'ios' ? screenHeight * 0.18 : screenHeight * 0.24,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -138,8 +131,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    zIndex: 999
-  }
+    zIndex: 999,
+  },
+  transparent: {
+    backgroundColor: 'transparent',
+  },
 });
 
 export default withLiveStatus(withCart(withCollapsibleContext(ProductDashboard)));

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TextStyle, View } from 'react-native';
 import React from 'react';
 import { Colors, Fonts } from '@utils/Constants';
+import { useTheme } from '@utils/ThemeContext';
 import { RFValue } from "react-native-responsive-fontsize";
 
 interface Props {
@@ -23,6 +24,7 @@ const CustomText = ({
     onLayout,
     ...props
 }: Props) => {
+    const { theme } = useTheme();
 
     let computedFontSize: number;
 
@@ -66,7 +68,8 @@ const CustomText = ({
     return (
         <Text onLayout={onLayout} style={[
             styles.text,
-            { color: Colors.text, fontSize: computedFontSize },
+            { color: theme.text, fontSize: computedFontSize },
+            fontFamilyStyle,
             style
         ]}
             numberOfLines={numberOfLines !== undefined ? numberOfLines : undefined}
