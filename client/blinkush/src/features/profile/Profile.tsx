@@ -9,13 +9,16 @@ import CustomText from '@components/ui/CustomText';
 import WalletSection from './WalletSection';
 import ActionButton from './ActionButton';
 import OrderItem from './OrderItem';
+import ThemeToggle from '@components/ui/ThemeToggle';
 import { tokenStorage } from '@state/storage';
 import { resetAndNavigate } from '@utils/navigation-utils';
+import { useTheme } from '@utils/ThemeContext';
 
 const Profile = () => {
     const [orders, setOrders] = useState<Order[] | []>([]);
     const { logout, user } = useAuthStore();
     const { clearCart } = useCartStore();
+    const { theme } = useTheme();
 
     const fetchOrders = async () => {
         if (!user?._id) return;
@@ -50,6 +53,7 @@ const Profile = () => {
                 </CustomText>
                 <ActionButton icon='book-outline' label='Address book' />
                 <ActionButton icon='information-circle-outline' label='About us' />
+                <ThemeToggle />
                 <ActionButton icon='log-out-outline' label='Logout' onPress={handleLogout} />
                 <CustomText variant='h6' style={styles.pastText} >
                     PAST ORDERS
@@ -68,7 +72,7 @@ const Profile = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <CustomHeader title='Profile' />
             <FlatList
                 data={orders}
@@ -86,7 +90,6 @@ export default Profile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
     },
     scrollViewContent: {
         padding: 10,
@@ -98,7 +101,6 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     pastText: {
-        marginTop: 20,
-        opacity: 0.7,
+        marginTop: 20
     }
 });
